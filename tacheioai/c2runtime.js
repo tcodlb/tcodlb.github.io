@@ -30846,7 +30846,7 @@ cr.getProjectModel = function() { return [
 	false,
 	360,
 	640,
-	4,
+	2,
 	true,
 	true,
 	false,
