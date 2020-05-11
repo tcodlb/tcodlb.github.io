@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <script type="text/javascript" src="cropper.js"></script>
+
+        <title>Narrow Jumbotron Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="editor.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="narrow-jumbotron.css" rel="stylesheet">
+  </head>
+
+  <body style="background-color: rgb(128, 64, 0); position: fixed; top: 0; left: 0; ">
+
+    
+    <div class="container" style="margin-bottom: 0px; padding-bottom: 0px;">
+      
+
+      <div class="jumbotron" style="background-color: rgb(221, 214, 172);">
+        
+        <p class="lead"><b  class="h3" style="color: rgb(21, 21, 21);">Faça a análise da cor do solo</b><div style="color: rgb(252, 252, 252);"><b id="text" style="color: rgb(0, 0, 0);">Tire uma foto ou use um foto já salva</b><br><div><div><div><div><div></div></div></div></div></div></div></p>
+        
+        <img id="logo" src="logosolo.png" style="position: fixed; top: 30%; left: 15%;">
+        <canvas id="testCanvas" width="282" height="282" style="border: 1px solid black;" >Your browser does not support canvas.</canvas>
+        
+        <script type="text/javascript">
+         
+          cropper.start(document.getElementById("testCanvas"), 1); // initialize cropper by providing it with a target canvas and a XY ratio (height = width * ratio)
+                
+          function handleFileSelect() {
+            // this function will be called when the file input below is changed
+            var file = document.getElementById("fileInput").files[0];  // get a reference to the selected file
+            
+            var reader = new FileReader(); // create a file reader
+            // set an onload function to show the image in cropper once it has been loaded
+            reader.onload = function(event) {
+              var data = event.target.result; // the "data url" of the image
+              cropper.showImage(data); // hand this to cropper, it will be displayed
+            };
+            
+            reader.readAsDataURL(file); // this loads the file as a data url calling the function above once done
+          }
+          
+        </script>
+        <div id="ed" style="display: none;">
+        <input type="file" id="fileInput" onchange="handleFileSelect()" style="display: none;"/>
+        <input id="cut" type="button" onclick="cropper.startCropping(); var bt = document.getElementById('ccut'); bt.style.display = 'block'; this.style.display='none' " value="Recortar" image="cut.png" />
+        <input style="display: none;" id="ccut" type="button" onclick="cropper.getCroppedImageSrc(); var bt = document.getElementById('cut'); bt.style.display = 'block'; this.style.display='none' " value="Confirmar recorte" />
+		    <input type="button" onclick="cropper.restore()" value="Restaurar" />
+		    <button onclick="Analisar()"> Analisar</button>
+        <canvas id="ok" width=50px height=50px>
+        
+
+        </div>
+        
+        <p><a id = "bt" class="btn btn-lg btn-success" onclick=" var bt = document.getElementById('ed'); bt.style.display = 'block'; var logo = document.getElementById('logo'); logo.remove(); var bt = document.getElementById('bt'); bt.remove(); var bt = document.getElementById('fileInput'); bt.click();"  href="#" role="button" style="border-radius: 20.8px;">CAPTURAR</a></p>
+      </div>
+      
+      </div>
+      
+      <div class="row marketing">
+        <div class="col-lg-6">
+          
+          
+
+          
+          
+
+          
+          
+        </div>
+
+        
+      </div>
+
+      
+
+    </div> <!-- /container -->
+
+
+
+
+
+
+</body>
+
+<script>
+		
+  function getPixel(imgData, index) {
+    var i = index*4, d = imgData.data;
+    return [d[i],d[i+1],d[i+2],d[i+3]] // [R,G,B,A]
+  }
+  
+  function getPixelXY(imgData, x, y) {
+    return getPixel(imgData, y*imgData.width+x);
+  }
+  
+  
+  function Analisar(){
+    var cvs = document.getElementById("testCanvas");
+    var ctx = cvs.getContext("2d");
+    var idt = ctx.getImageData(0,0,cvs.width,cvs.height);
+    var mx = cvs.width/3|0;
+    var my = cvs.height/3|0;
+    //var a = getPixelXY(idt, mw,mh);
+    //var bt = document.getElementById("ok");
+    //bt.style.background = "#" + fullColorHex(a[0], a[1], a[2])
+  
+    var color = getAverageRGB(ctx, mx, my,cvs.height, cvs.width);
+    var bt = document.getElementById("ok");
+    bt.style.background = "#" + fullColorHex(color.r, color.g, color.b);
+    var txt = document.getElementById("text");
+    txt.innerHTML = "Vermelho: "+color.r+ ", Verde: " + color.g + ", Azul: "+color.b;
+  }
+  
+  var rgbToHex = function (rgb) { 
+    var hex = Number(rgb).toString(16);
+    if (hex.length < 2) {
+       hex = "0" + hex;
+    }
+    return hex;
+  };
+  
+  var fullColorHex = function(r,g,b) {   
+    var red = rgbToHex(r);
+    var green = rgbToHex(g);
+    var blue = rgbToHex(b);
+    return red+green+blue;
+  };
+  
+  
+  
+  
+  
+  
+  
+  function getAverageRGB(context, x, y, h, w) {
+  
+  var blockSize = 5, // only visit every 5 pixels
+    defaultRGB = {r:0,g:0,b:0}, // for non-supporting envs
+    width, height,
+    i = -4,
+    length,
+    rgb = {r:0,g:0,b:0},
+    count = 0;
+  
+  if (!context) {
+    return defaultRGB;
+  }
+  
+  height = h;
+  width = w;
+  
+  try {
+    data = context.getImageData(0, 0, width, height);
+  } catch(e) {
+    /* security error, img on diff domain */
+    return defaultRGB;
+  }
+  
+  length = data.data.length;
+  
+  while ( (i += blockSize * 4) < length ) {
+    ++count;
+    rgb.r += data.data[i];
+    rgb.g += data.data[i+1];
+    rgb.b += data.data[i+2];
+  }
+  
+  // ~~ used to floor values
+  rgb.r = ~~(rgb.r/count);
+  rgb.g = ~~(rgb.g/count);
+  rgb.b = ~~(rgb.b/count);
+  
+  return rgb;
+  
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    </script>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>cropper.js example</title>
+		<!-- Import the library js file -->
+		<!-- You might want to use "cropper_jsmin.js" on an actual site -->
+		<script type="text/javascript" src="cropper.js"></script>
+		
+	</head>
+	<body>
+		<!-- A canvas which cropper will draw on -->
+		<canvas id="testCanvas" width="500" height="500" style="border: 1px solid black;" >Your browser does not support canvas.</canvas>
+		
+		<script type="text/javascript">
+			cropper.start(document.getElementById("testCanvas"), 1); // initialize cropper by providing it with a target canvas and a XY ratio (height = width * ratio)
+						
+			function handleFileSelect() {
+				// this function will be called when the file input below is changed
+				var file = document.getElementById("fileInput").files[0];  // get a reference to the selected file
+				
+				var reader = new FileReader(); // create a file reader
+				// set an onload function to show the image in cropper once it has been loaded
+				reader.onload = function(event) {
+					var data = event.target.result; // the "data url" of the image
+					cropper.showImage(data); // hand this to cropper, it will be displayed
+				};
+				
+				reader.readAsDataURL(file); // this loads the file as a data url calling the function above once done
+			}
+			
+		</script>
+		
+		<br />
+		<!-- Below are a series of inputs which allow file selection and interaction with the cropper api -->
+		<input type="file" id="fileInput" onchange="handleFileSelect()" />
+		<input type="button" onclick="cropper.startCropping()" value="Start cropping" />
+		<input type="button" onclick="cropper.getCroppedImageSrc()" value="Crop" />
+		<input type="button" onclick="cropper.restore()" value="Restore" />
+		<button onclick="Analisar()"> Analisar</button>
+		<canvas id="ok" width=50px height=50px></div>
+
+
+		
+	</body>
+
+
+	<script>
+		
+		function getPixel(imgData, index) {
+		  var i = index*4, d = imgData.data;
+		  return [d[i],d[i+1],d[i+2],d[i+3]] // [R,G,B,A]
+		}
+		
+		function getPixelXY(imgData, x, y) {
+		  return getPixel(imgData, y*imgData.width+x);
+		}
+		
+		
+		function Analisar(){
+		  var cvs = document.getElementById("testCanvas");
+		  var ctx = cvs.getContext("2d");
+		  var idt = ctx.getImageData(0,0,cvs.width,cvs.height);
+		  var mx = cvs.width/3|0;
+		  var my = cvs.height/3|0;
+		  //var a = getPixelXY(idt, mw,mh);
+		  //var bt = document.getElementById("ok");
+		  //bt.style.background = "#" + fullColorHex(a[0], a[1], a[2])
+		
+		  var color = getAverageRGB(ctx, mx, my,cvs.height, cvs.width);
+		  var bt = document.getElementById("ok");
+		  bt.style.background = "#" + fullColorHex(color.r, color.g, color.b);
+		
+		  
+		}
+		
+		var rgbToHex = function (rgb) { 
+		  var hex = Number(rgb).toString(16);
+		  if (hex.length < 2) {
+			   hex = "0" + hex;
+		  }
+		  return hex;
+		};
+		
+		var fullColorHex = function(r,g,b) {   
+		  var red = rgbToHex(r);
+		  var green = rgbToHex(g);
+		  var blue = rgbToHex(b);
+		  return red+green+blue;
+		};
+		
+		
+		
+		
+		
+		
+		
+		function getAverageRGB(context, x, y, h, w) {
+		
+		var blockSize = 5, // only visit every 5 pixels
+			defaultRGB = {r:0,g:0,b:0}, // for non-supporting envs
+			width, height,
+			i = -4,
+			length,
+			rgb = {r:0,g:0,b:0},
+			count = 0;
+		
+		if (!context) {
+			return defaultRGB;
+		}
+		
+		height = h;
+		width = w;
+		
+		try {
+			data = context.getImageData(0, 0, width, height);
+		} catch(e) {
+			/* security error, img on diff domain */
+			return defaultRGB;
+		}
+		
+		length = data.data.length;
+		
+		while ( (i += blockSize * 4) < length ) {
+			++count;
+			rgb.r += data.data[i];
+			rgb.g += data.data[i+1];
+			rgb.b += data.data[i+2];
+		}
+		
+		// ~~ used to floor values
+		rgb.r = ~~(rgb.r/count);
+		rgb.g = ~~(rgb.g/count);
+		rgb.b = ~~(rgb.b/count);
+		
+		return rgb;
+		
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			</script>
+
+
+
+</html>
