@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/brython@3.9.0/brython.min.js">
+    </script>
+   
+    
+</head>
+
+<body onload="brython()">
+<div>Calculadora Faculdade</div>
+<div>
+    <label>Digite a nota A1:</label>
+    <input id="a1" type="text"></input>
+    <br>
+    <label>Digite a nota A2:</label>
+    <input id="a2" type="text"></input>
+    <br>
+    <label>Digite a nota A3:</label>
+    <input id="a3" type="text"></input>
+    <br>
+    <label>Digite a nota A4:</label>
+    <input id="a4" type="text"></input>
+    <br>
+    <label>Digite a nota N2:</label>
+    <input id="n2" type="text"></input>
+    <br>
+    <button id="bt">Calcular</button>
+    
+</div>
+
+
+<script type="text/python">
+    from browser import document, alert
+
+    def calculadora(ev):
+        a1 = float(document["a1"].value)
+        a2 = float(document["a2"].value)
+        a3 = float(document["a3"].value)
+        a4 = float(document["a4"].value)
+        n2 = float(document["n2"].value)
+        n1=(a1+a2+a3+a4)/4
+        c1=n1*0.4
+        c2=n2*0.6
+        c3=c1+c2
+        result = ""
+        if c3 >= 6.0:
+            result = "Aprovado, Parabéns!"
+        else:
+            result = "Reprovado,Estude mais!"
+        alert("Nota final: " + str(c3) + ". " + result)
+        
+    
+    document["bt"].bind("click", calculadora)
+    
+    
+
+    
+    
+    
+</script>
+
+</body>
+</html>
