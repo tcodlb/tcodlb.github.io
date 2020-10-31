@@ -6,30 +6,43 @@
     <script type="text/javascript"
         src="https://cdn.jsdelivr.net/npm/brython@3.9.0/brython.min.js">
     </script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
    
     
 </head>
 
 <body onload="brython()">
-<div>Calculadora Faculdade</div>
-<div>
+
+
+    <div class="container-fluid">
+        <center><h2><div>Calculadora Faculdade</div></h2></center>
+        <div class="row">
+            <div class="col-md-12">
+
+
+    <form role="form">
+        <div class="form-group">
     <label>Digite a nota A1:</label>
-    <input id="a1" type="text"></input>
+    <input class="form-control" id="a1" type="text"></input>
     <br>
     <label>Digite a nota A2:</label>
-    <input id="a2" type="text"></input>
+    <input class="form-control" id="a2" type="text"></input>
     <br>
     <label>Digite a nota A3:</label>
-    <input id="a3" type="text"></input>
+    <input class="form-control" id="a3" type="text"></input>
     <br>
     <label>Digite a nota A4:</label>
-    <input id="a4" type="text"></input>
+    <input class="form-control" id="a4" type="text"></input>
     <br>
     <label>Digite a nota N2:</label>
-    <input id="n2" type="text"></input>
+    <input class="form-control" id="n2" type="text"></input>
     <br>
-    <button id="bt">Calcular</button>
-    
+    <button class="btn btn-primary" id="bt">Calcular</button>
+        </div>
+</form>
+</div>
+</div>
 </div>
 
 
@@ -63,5 +76,11 @@
     
 </script>
 
+
+<script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+
 </body>
+
 </html>
